@@ -26,7 +26,7 @@ namespace NotificacionAppLN
             if (notificationTime > DateTime.Now)
             {
                 ScheduleNotification(notificationTime);
-                DisplayAlert("Éxito", "Notificación programada.", "OK");
+                DisplayAlert("Éxito", $"Notificación programada.{notificationTime}", "OK");
             }
             else
             {
@@ -38,15 +38,17 @@ namespace NotificacionAppLN
         {
             var notification = new NotificationRequest
             {
-                NotificationId = 100, // ID único para la notificación
-                Title = "Recordatorio",
-                Description = "¡Es hora!",
+                NotificationId = 1001,
+                Title = "App Name",
+                Subtitle = "Hello",
+                Description = "Description",
+                BadgeNumber = 42,
                 Schedule = new NotificationRequestSchedule
                 {
-                    NotifyTime = notificationTime // Hora programada
+                    NotifyTime = notificationTime
                 }
             };
-
+            
             // Programar la notificación
             LocalNotificationCenter.Current.Show(notification);
         }
