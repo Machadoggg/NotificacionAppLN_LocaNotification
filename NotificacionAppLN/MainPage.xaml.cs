@@ -1,24 +1,54 @@
-﻿namespace NotificacionAppLN
+﻿using Plugin.LocalNotification;
+
+namespace NotificacionAppLN
 {
     public partial class MainPage : ContentPage
     {
-        int count = 0;
-
         public MainPage()
         {
             InitializeComponent();
         }
 
-        private void OnCounterClicked(object sender, EventArgs e)
+        private void OnScheduleNotificationClicked(object sender, EventArgs e)
         {
-            count++;
+            var selectedDate = datePicker.Date;
+            var selectedTime = timePicker.Time;
 
-            if (count == 1)
-                CounterBtn.Text = $"Clicked {count} time";
+            var notificationTime = new DateTime(
+                selectedDate.Year,
+                selectedDate.Month,
+                selectedDate.Day,
+                selectedTime.Hours,
+                selectedTime.Minutes,
+                selectedTime.Seconds
+            );
+
+            if (notificationTime > DateTime.Now)
+            {
+                ScheduleNotification(notificationTime);
+                DisplayAlert("Éxito", "Notificación programada.", "OK");
+            }
             else
-                CounterBtn.Text = $"Clicked {count} times";
+            {
+                DisplayAlert("Error", "La fecha y hora deben ser futuras.", "OK");
+            }
+        }
 
-            SemanticScreenReader.Announce(CounterBtn.Text);
+        private void ScheduleNotification(DateTime notificationTime)
+        {
+            var notification = new NotificationRequest
+            {
+                NotificationId = 100, // ID único para la notificación
+                Title = "Recordatorio",
+                Description = "¡Es hora!",
+                Schedule = new NotificationRequestSchedule
+                {
+                    NotifyTime = notificationTime // Hora programada
+                }
+            };
+
+            // Programar la notificación
+            LocalNotificationCenter.Current.Show(notification);
         }
     }
 
